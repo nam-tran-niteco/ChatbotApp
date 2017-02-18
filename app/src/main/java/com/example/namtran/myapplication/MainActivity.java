@@ -1,12 +1,19 @@
 package com.example.namtran.myapplication;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.speech.RecognizerIntent;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
@@ -14,7 +21,9 @@ import co.intentservice.chatui.models.ChatMessage;
 public class MainActivity extends AppCompatActivity {
 
     // URL to get contacts JSON
-    private static String url = "http://10.10.16.163:3000/chat";
+    private static String url = "http://192.168.1.2:3000/chat";
+
+    private final int REQ_CODE_SPEECH_INPUT = 100;
 
     private ChatView chatView;
 
@@ -26,31 +35,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Setup chatview
         chatView = (ChatView) findViewById(R.id.chat_view);
 
-        chatView.addMessage(new ChatMessage("Hi user", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+        chatView.addMessage(new ChatMessage("Xin chào", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
 
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
-                Log.d("test", chatMessage.getMessage());
-                userMessage = chatMessage.getMessage();
-                botMessage = new ChatMessage("Bot is typing", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
-                chatView.addMessage(botMessage);
-                new GetContacts().execute();
                 return true;
             }
-        });
-
-        chatView.setTypingListener(new ChatView.TypingListener() {
-            @Override
-            public void userStartedTyping() {
-
-            }
 
             @Override
-            public void userStoppedTyping() {
-
+            public void afterSendMessage() {
+                botMessage = new ChatMessage("Bot đang nhập ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
+                chatView.addMessage(botMessage);
+                new GetContacts().execute();
             }
         });
 
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Making a request to url and getting response
                 JSONObject params = new JSONObject();
-                params.put("chat", userMessage);
+                params.put("chat", "Mình tên là Nam");
                 String jsonStr = sh.sendRequest(url, params.toString());
                 Log.d("test", jsonStr);
 

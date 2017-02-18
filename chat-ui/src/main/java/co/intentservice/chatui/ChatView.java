@@ -353,7 +353,9 @@ public class ChatView extends RelativeLayout {
         if (onSentMessageListener != null && onSentMessageListener.sendMessage(chatMessage)) {
             chatViewListAdapter.addMessage(chatMessage);
             inputEditText.setText("");
+            onSentMessageListener.afterSendMessage();
         }
+
     }
 
     public void addMessage(ChatMessage chatMessage) {
@@ -384,6 +386,7 @@ public class ChatView extends RelativeLayout {
 
     public interface OnSentMessageListener {
         boolean sendMessage(ChatMessage chatMessage);
+        void afterSendMessage();
     }
 
     private class ChatViewListAdapter extends BaseAdapter {

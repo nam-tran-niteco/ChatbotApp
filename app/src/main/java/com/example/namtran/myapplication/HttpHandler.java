@@ -7,6 +7,7 @@ package com.example.namtran.myapplication;
 import java.io.IOException;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -27,7 +28,8 @@ public class HttpHandler {
 
             OkHttpClient client = new OkHttpClient();
             RequestBody requestBody = RequestBody.create(JSON, params);
-            Request request = new Request.Builder()
+
+            Request request = new Request.Builder().addHeader("Content-Type", "application/json")
                     .url(reqUrl)
                     .post(requestBody)
                     .build();
