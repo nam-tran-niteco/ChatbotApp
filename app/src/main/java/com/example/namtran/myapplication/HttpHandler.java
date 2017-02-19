@@ -20,9 +20,6 @@ public class HttpHandler {
     private static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
-    public HttpHandler() {
-    }
-
     public String sendRequest(String reqUrl, String params) {
         try {
 
@@ -40,7 +37,7 @@ public class HttpHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
 

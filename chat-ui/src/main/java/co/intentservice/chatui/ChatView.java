@@ -366,6 +366,10 @@ public class ChatView extends RelativeLayout {
         chatViewListAdapter.addMessages(messages);
     }
 
+    public void changeMessage(ChatMessage chatMessage, String message) {
+        chatViewListAdapter.changeMessage(chatMessage, message);
+    }
+
 
     public EditText getInputEditText() {
         return inputEditText;
@@ -465,6 +469,11 @@ public class ChatView extends RelativeLayout {
 
         private void addMessages(ArrayList<ChatMessage> chatMessages) {
             this.chatMessages.addAll(chatMessages);
+            notifyDataSetChanged();
+        }
+
+        private void changeMessage(ChatMessage chatMessage, String message) {
+            chatMessage.setMessage(message);
             notifyDataSetChanged();
         }
 
