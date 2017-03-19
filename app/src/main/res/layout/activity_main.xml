@@ -6,7 +6,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.namtran.myapplication.MainActivity">
+    tools:context="com.example.namtran.myapplication.activities.MainActivity">
 
     <co.intentservice.chatui.ChatView
         android:id="@+id/chat_view"

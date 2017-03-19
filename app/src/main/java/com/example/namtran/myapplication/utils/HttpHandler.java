@@ -1,4 +1,4 @@
-package com.example.namtran.myapplication;
+package com.example.namtran.myapplication.utils;
 
 /**
  * Created by nam.tran on 17-Jan-17.
@@ -7,7 +7,6 @@ package com.example.namtran.myapplication;
 import java.io.IOException;
 
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;

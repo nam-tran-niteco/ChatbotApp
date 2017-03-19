@@ -1,4 +1,4 @@
-package com.example.namtran.myapplication;
+package com.example.namtran.myapplication.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.namtran.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.Locale;
