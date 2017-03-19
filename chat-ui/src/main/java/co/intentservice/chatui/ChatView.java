@@ -11,7 +11,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -44,7 +43,7 @@ public class ChatView extends RelativeLayout {
 
     private FloatingActionsMenu actionsMenu;
     private boolean previousFocusState = false, useEditorAction, isTyping;
-
+    private TypingListener typingListener;
     private Runnable typingTimerRunnable = new Runnable() {
         @Override
         public void run() {
@@ -54,7 +53,6 @@ public class ChatView extends RelativeLayout {
             }
         }
     };
-    private TypingListener typingListener;
     private OnSentMessageListener onSentMessageListener;
     private ChatViewListAdapter chatViewListAdapter;
 
@@ -70,8 +68,7 @@ public class ChatView extends RelativeLayout {
     private Context context;
 
 
-
-     ChatView(Context context) {
+    ChatView(Context context) {
         this(context, null);
     }
 
@@ -259,7 +256,7 @@ public class ChatView extends RelativeLayout {
         });
     }
 
-    private void setButtonClickListeners() {
+    public void setButtonClickListeners() {
 
         actionsMenu.getSendButton().setOnClickListener(new OnClickListener() {
             @Override
@@ -272,9 +269,9 @@ public class ChatView extends RelativeLayout {
 
                 long stamp = System.currentTimeMillis();
                 String message = inputEditText.getText().toString();
-                if (!TextUtils.isEmpty(message)) {
+//                if (!TextUtils.isEmpty(message)) {
                     sendMessage(message, stamp);
-                }
+//                }
 
             }
         });
@@ -350,7 +347,8 @@ public class ChatView extends RelativeLayout {
     private void sendMessage(String message, long stamp) {
 
         ChatMessage chatMessage = new ChatMessage(message, stamp, Type.SENT);
-        if (onSentMessageListener != null && onSentMessageListener.sendMessage(chatMessage)) {
+        if (message.equals("") && onSentMessageListener != null) onSentMessageListener.sendMessage(chatMessage);
+        else if (onSentMessageListener != null && onSentMessageListener.sendMessage(chatMessage)) {
             chatViewListAdapter.addMessage(chatMessage);
             inputEditText.setText("");
             onSentMessageListener.afterSendMessage();
@@ -390,6 +388,7 @@ public class ChatView extends RelativeLayout {
 
     public interface OnSentMessageListener {
         boolean sendMessage(ChatMessage chatMessage);
+
         void afterSendMessage();
     }
 
