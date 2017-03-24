@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.namtran.myapplication.R;
 import com.example.namtran.myapplication.features.Feature;
 import com.example.namtran.myapplication.features.FeatureFactory;
+import com.example.namtran.myapplication.utils.GetResponseFromWit;
 import com.example.namtran.myapplication.utils.HttpHandler;
 
 import org.json.JSONException;
@@ -51,64 +52,12 @@ public class MainActivity extends AppCompatActivity {
             public void afterSendMessage() {
                 botMessage = new ChatMessage("Bot đang nhập ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                 chatView.addMessage(botMessage);
-                new GetContacts().execute();
+                GetResponseFromWit getResponseFromWit = new GetResponseFromWit(getApplicationContext(), chatView, botMessage);
+                getResponseFromWit.setUserMessage(userMessage);
+                getResponseFromWit.execute();
             }
         });
 
     }
 
-    /**
-     * Async task class to get json by making HTTP call
-     */
-    private class GetContacts extends AsyncTask<Void, String, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            try {
-                HttpHandler sh = new HttpHandler();
-
-                // Making a request to url and getting response
-                JSONObject params = new JSONObject();
-                params.put("chat", userMessage);
-                String jsonStr = sh.sendRequest(url_message, params.toString());
-                Log.d("chatbot", jsonStr);
-
-                if (!jsonStr.equals("")) {
-                    JSONObject returnObject = new JSONObject(jsonStr);
-                    JSONObject entities = returnObject.getJSONObject("entities");
-                    Iterator<String> entityKeys = entities.keys();
-                    HashMap<String, String> responseParams = new HashMap<>();
-                    while (entityKeys.hasNext()) {
-                        String entityKey = entityKeys.next();
-                        responseParams.put(entityKey, entities.getJSONArray(entityKey).getJSONObject(0).getString("value"));
-                    }
-                    if (!responseParams.isEmpty()) {
-                        Feature feature = FeatureFactory.getFeatureByParams(getApplicationContext(), responseParams);
-                        publishProgress(feature.doAction());
-                    }
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            chatView.changeMessage(botMessage, values[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-        }
-
-    }
 }
