@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.namtran.myapplication.constant.NetworkInfo;
 import com.example.namtran.myapplication.features.Feature;
 import com.example.namtran.myapplication.features.FeatureFactory;
 
@@ -22,10 +23,6 @@ import co.intentservice.chatui.models.ChatMessage;
  */
 
 public class GetResponseFromWit extends AsyncTask<Void, String, Void> {
-
-    // URL to get contacts JSON
-    private static String url = "https://chatbottestapi.herokuapp.com/chat/runactionsApi";
-    private static String url_message = "https://chatbottestapi.herokuapp.com/chat/messageapi";
 
     private Context _context;
 
@@ -53,7 +50,7 @@ public class GetResponseFromWit extends AsyncTask<Void, String, Void> {
             // Making a request to url and getting response
             JSONObject params = new JSONObject();
             params.put("chat", userMessage);
-            String jsonStr = sh.sendRequest(url_message, params.toString());
+            String jsonStr = sh.sendRequest(NetworkInfo.SERVER_URL_MESSAGE, params.toString());
             Log.d("chatbot", jsonStr);
 
             if (!jsonStr.equals("")) {
