@@ -38,7 +38,10 @@ public class LightFeature extends Feature{
                 return BotMessage.LIGHT_FEATURE_NOT_AVAILABLE_MESSAGE;
             }
             else {
-                if ( getParams().containsKey(ParamsKey.TURN_ON_LIGHT) )  setLightOn(true);
+                if ( getParams().containsKey(ParamsKey.TURN_ON_LIGHT) ) {
+                    if ( getParams().get(ParamsKey.TURN_ON_LIGHT).equals("true") ) setLightOn(true);
+                    else setLightOn(false);
+                }
                 else setLightOn(false);
                 return BotMessage.LIGHT_FEATURE_SUCCESS_MESSAGE;
             }

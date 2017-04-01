@@ -6,7 +6,7 @@ package com.example.namtran.myapplication.constant;
 
 public class BotMessage {
 
-    public static final String LIGHT_FEATURE_SUCCESS_MESSAGE = "Thuc hien tac vu den thanh cong";
-    public static final String LIGHT_FEATURE_NOT_AVAILABLE_MESSAGE = "Dien thoai khong co san den";
+    public static final String LIGHT_FEATURE_SUCCESS_MESSAGE = "Thực hiện tác vụ đèn thành công";
+    public static final String LIGHT_FEATURE_NOT_AVAILABLE_MESSAGE = "Điện thoại không có sẵn đèn";
 
 }
