@@ -2,24 +2,16 @@ package com.example.namtran.myapplication.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.namtran.myapplication.R;
-import com.example.namtran.myapplication.features.Feature;
-import com.example.namtran.myapplication.features.FeatureFactory;
-import com.example.namtran.myapplication.utils.HttpHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.namtran.myapplication.features.CalendarFeature;
+import com.example.namtran.myapplication.utils.GetResponseFromWit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 
 import co.intentservice.chatui.ChatView;
@@ -37,13 +29,18 @@ public class MainActivity extends AppCompatActivity {
     private ChatMessage botMessage;
     private String userMessage;
 
+    private GetResponseFromWit getResponseFromWit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Setup chatview
+        new CalendarFeature(this).getCalendar();
+
+        // Initial properties
         chatView = (ChatView) findViewById(R.id.chat_view);
+        getResponseFromWit = new GetResponseFromWit(this, chatView);
 
         chatView.addMessage(new ChatMessage("Xin chào", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
 
@@ -79,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.speech_prompt));
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-            Log.d("End", "chatbot");
         } catch (ActivityNotFoundException a) {
             Toast.makeText(getApplicationContext(),
                     getString(R.string.speech_not_supported),
@@ -102,9 +98,11 @@ public class MainActivity extends AppCompatActivity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     userMessage = result.get(0);
                     chatView.addMessage(new ChatMessage(userMessage, System.currentTimeMillis(), ChatMessage.Type.SENT));
-                    botMessage = new ChatMessage("Bot đang xử lý ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
+                    botMessage = new ChatMessage("Bot đang nhập ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                     chatView.addMessage(botMessage);
-                    new GetContacts().execute();
+                    getResponseFromWit.setUserMessage(userMessage);
+                    getResponseFromWit.set_botMessage(botMessage);
+                    getResponseFromWit.execute();
                 }
                 break;
             }
@@ -112,58 +110,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Async task class to get json by making HTTP call
-     */
-    private class GetContacts extends AsyncTask<Void, String, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            try {
-                HttpHandler sh = new HttpHandler();
-
-                // Making a request to url and getting response
-                JSONObject params = new JSONObject();
-                params.put("chat", userMessage);
-                String jsonStr = sh.sendRequest(url_message, params.toString());
-                Log.d("chatbot", jsonStr);
-
-                if (!jsonStr.equals("")) {
-                    JSONObject returnObject = new JSONObject(jsonStr);
-                    JSONObject entities = returnObject.getJSONObject("entities");
-                    Iterator<String> entityKeys = entities.keys();
-                    HashMap<String, String> responseParams = new HashMap<>();
-                    while (entityKeys.hasNext()) {
-                        String entityKey = entityKeys.next();
-                        responseParams.put(entityKey, entities.getJSONArray(entityKey).getJSONObject(0).getString("value"));
-                    }
-                    if (!responseParams.isEmpty()) {
-                        Feature feature = FeatureFactory.getFeatureByParams(getApplicationContext(), responseParams);
-                        publishProgress(feature.doAction());
-                    }
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            chatView.changeMessage(botMessage, values[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-        }
-
-    }
 }
