@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.namtran.myapplication.R;
+import com.example.namtran.myapplication.features.CalendarFeature;
 import com.example.namtran.myapplication.features.Feature;
 import com.example.namtran.myapplication.features.FeatureFactory;
 import com.example.namtran.myapplication.utils.GetResponseFromWit;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new CalendarFeature(this).getCalendar();
 
         // Initial properties
         chatView = (ChatView) findViewById(R.id.chat_view);
