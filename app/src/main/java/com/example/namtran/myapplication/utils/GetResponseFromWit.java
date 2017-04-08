@@ -65,7 +65,7 @@ public class GetResponseFromWit {
                 // Making a request to url and getting response
                 JSONObject params = new JSONObject();
                 params.put("chat", userMessage);
-                String jsonStr = sh.sendRequest(NetworkInfo.SERVER_URL_MESSAGE, params.toString());
+                String jsonStr = sh.sendRequest(NetworkInfo.SERVER_LOCAL_URL, params.toString());
                 publishProgress(getBotResponse(jsonStr));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -86,7 +86,7 @@ public class GetResponseFromWit {
         }
     }
 
-    public String handleResponse(String jsonStringResult) {
+    private String handleResponse(String jsonStringResult) {
         HashMap<String, String> responseParams = getResponseParams(jsonStringResult);
         if (!responseParams.isEmpty()) {
             Feature feature = FeatureFactory.getFeatureByParams(_context, responseParams);
@@ -98,13 +98,13 @@ public class GetResponseFromWit {
     @Nullable
     private HashMap<String, String> getResponseParams(String jsonStringResult) {
         try {
-            if (!jsonStringResult.equals("")) {
-                JSONObject entities = new JSONObject(jsonStringResult).getJSONObject("entities");
+            JSONObject entities = getChildObject(jsonStringResult, "entities");
+            if (entities != null) {
                 Iterator<String> entityKeys = entities.keys();
                 HashMap<String, String> responseParams = new HashMap<>();
                 while (entityKeys.hasNext()) {
                     String entityKey = entityKeys.next();
-                    responseParams.put(entityKey, entities.getJSONArray(entityKey).getJSONObject(0).getString("value"));
+                    responseParams.put(entityKey, getEntitiesValue(entities, entityKey));
                 }
                 return responseParams;
             }
@@ -116,17 +116,20 @@ public class GetResponseFromWit {
 
     private String getBotResponse(String jsonStringResult) {
         try {
-            if (!jsonStringResult.equals("")) {
-                JSONObject entities = new JSONObject(jsonStringResult).getJSONObject("entities");
-                if (entities.has("intent") && getEntitiesValue(entities, "intent").equals("request")) {
-                    String request_action = getEntitiesValue(entities, "request_action");
-                    String request_object = getEntitiesValue(entities, "request_object");
-                    return "Có phải bạn muốn " + request_action + request_object + "?";
-                }
-                return "Tôi chưa rõ yêu cầu của bạn, hãy thử một yêu cầu khác";
+            JSONObject response = getChildObject(jsonStringResult, "response");
+            if (response != null) {
+                return response.getString("text");
             }
+            return "Tôi chưa rõ yêu cầu của bạn, hãy thử một yêu cầu khác";
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    private JSONObject getChildObject(String jsonStringResult, String objectKey) throws JSONException {
+        if (!jsonStringResult.equals("")) {
+            return new JSONObject(jsonStringResult).getJSONObject(objectKey);
         }
         return null;
     }
