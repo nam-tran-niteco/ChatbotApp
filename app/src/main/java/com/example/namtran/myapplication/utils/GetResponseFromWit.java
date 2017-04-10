@@ -65,7 +65,7 @@ public class GetResponseFromWit {
                 // Making a request to url and getting response
                 JSONObject params = new JSONObject();
                 params.put("chat", userMessage);
-                String jsonStr = sh.sendRequest(NetworkInfo.SERVER_LOCAL_URL, params.toString());
+                String jsonStr = sh.sendRequest(NetworkInfo.SERVER_URL, params.toString());
                 publishProgress(getBotResponse(jsonStr));
             } catch (JSONException e) {
                 e.printStackTrace();
