@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.namtran.myapplication.R;
 import com.example.namtran.myapplication.features.CalendarFeature;
+import com.example.namtran.myapplication.utils.FileUtil;
 import com.example.namtran.myapplication.utils.GetResponseFromWit;
 
 import java.util.ArrayList;
@@ -96,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                    // Write result to file for analysis
+                    FileUtil.writeFile(result);
+
                     userMessage = result.get(0);
                     chatView.addMessage(new ChatMessage(userMessage, System.currentTimeMillis(), ChatMessage.Type.SENT));
                     botMessage = new ChatMessage("Bot đang nhập ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
