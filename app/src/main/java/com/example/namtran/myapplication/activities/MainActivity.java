@@ -2,6 +2,7 @@ package com.example.namtran.myapplication.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
@@ -36,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        new CalendarFeature(this).getCalendar();
 
         // Initial properties
         chatView = (ChatView) findViewById(R.id.chat_view);
@@ -99,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     // Write result to file for analysis
-                    FileUtil.writeFile(result);
+//                    FileUtil.writeFile(result);
+                    MediaScannerConnection.scanFile(getApplicationContext(), new String[]{FileUtil.writeFile(result).getAbsolutePath()},null, null);
 
                     userMessage = result.get(0);
                     chatView.addMessage(new ChatMessage(userMessage, System.currentTimeMillis(), ChatMessage.Type.SENT));
