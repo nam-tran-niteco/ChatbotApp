@@ -1,6 +1,7 @@
 package com.example.namtran.myapplication.activities;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
@@ -8,12 +9,13 @@ import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.chatbot.nam.vietnamesechatbotlibrary.utils.TextAnalysisThread;
 import com.example.namtran.myapplication.R;
-import com.example.namtran.myapplication.features.CalendarFeature;
 import com.example.namtran.myapplication.utils.FileUtil;
-import com.example.namtran.myapplication.utils.GetResponseFromWit;
+import com.example.namtran.myapplication.utils.TextToSpeechUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import co.intentservice.chatui.ChatView;
@@ -21,9 +23,6 @@ import co.intentservice.chatui.models.ChatMessage;
 
 public class MainActivity extends AppCompatActivity {
 
-    // URL to get contacts JSON
-    private static String url = "https://chatbottestapi.herokuapp.com/chat/runactionsApi";
-    private static String url_message = "https://chatbottestapi.herokuapp.com/chat/messageapi";
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
     private ChatView chatView;
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ChatMessage botMessage;
     private String userMessage;
 
-    private GetResponseFromWit getResponseFromWit;
+    private CustomTextAnalysis customTextAnalisis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Initial properties
         chatView = (ChatView) findViewById(R.id.chat_view);
-        getResponseFromWit = new GetResponseFromWit(this, chatView);
+        customTextAnalisis = new CustomTextAnalysis(this, chatView);
 
         chatView.addMessage(new ChatMessage("Xin chào", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
 
         chatView.setOnSentMessageListener(new ChatView.OnSentMessageListener() {
             @Override
             public boolean sendMessage(ChatMessage chatMessage) {
-//                userMessage = chatMessage.getMessage();
                 if (chatMessage.getMessage().equals("")) {
                     promptSpeechInput();
                 }
@@ -56,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterSendMessage() {
-//                botMessage = new ChatMessage("Bot đang nhập ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
-//                chatView.addMessage(botMessage);
-//                new GetContacts().execute();
             }
         });
 
@@ -98,20 +93,61 @@ public class MainActivity extends AppCompatActivity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     // Write result to file for analysis
-//                    FileUtil.writeFile(result);
                     MediaScannerConnection.scanFile(getApplicationContext(), new String[]{FileUtil.writeFile(result).getAbsolutePath()},null, null);
 
                     userMessage = result.get(0);
                     chatView.addMessage(new ChatMessage(userMessage, System.currentTimeMillis(), ChatMessage.Type.SENT));
                     botMessage = new ChatMessage("Bot đang nhập ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
                     chatView.addMessage(botMessage);
-                    getResponseFromWit.setUserMessage(userMessage);
-                    getResponseFromWit.set_botMessage(botMessage);
-                    getResponseFromWit.execute();
+
+                    customTextAnalisis.setInputMessage(userMessage);
+                    customTextAnalisis.set_botMessage(botMessage);
+                    customTextAnalisis.execute();
                 }
                 break;
             }
 
+        }
+    }
+
+    private class CustomTextAnalysis extends TextAnalysisThread {
+
+        private Context _context;
+
+        private ChatView _chatView;
+
+        private ChatMessage _botMessage;
+
+        private TextToSpeechUtil _textToSpeechUtil;
+
+        CustomTextAnalysis(Context context, ChatView chatView) {
+            _context = context;
+            _chatView = chatView;
+            _textToSpeechUtil = new TextToSpeechUtil(context);
+        }
+
+        @Override
+        public void onThreadPreExcute() {
+
+        }
+
+        @Override
+        public void onThreadProgressUpdate(String... values) {
+            _chatView.changeMessage(_botMessage, values[0]);
+            _textToSpeechUtil.speakText(values[0]);
+        }
+
+        @Override
+        public void onThreadPostExecute(HashMap<String, String> result) {
+
+        }
+
+        public ChatMessage get_botMessage() {
+            return _botMessage;
+        }
+
+        public void set_botMessage(ChatMessage _botMessage) {
+            this._botMessage = _botMessage;
         }
     }
 

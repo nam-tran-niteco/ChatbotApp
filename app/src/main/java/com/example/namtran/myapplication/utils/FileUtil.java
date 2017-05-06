@@ -1,5 +1,6 @@
 package com.example.namtran.myapplication.utils;
 
+import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.util.Log;
 
@@ -17,9 +18,10 @@ public class FileUtil {
 
     private static final String FILE_NAME = "GoogleVoiceResult.txt";
 
-    public static void writeFile(ArrayList<String> results) {
+    public static File writeFile(ArrayList<String> results) {
+        File file = null;
         try {
-            File file = new File(Environment.getExternalStorageDirectory(), FILE_NAME);
+            file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), FILE_NAME);
             FileOutputStream outputStream;
             outputStream = new FileOutputStream(file, true);
             if (results != null) {
@@ -34,6 +36,7 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return file;
     }
 
     /* Checks if external storage is available for read and write */
