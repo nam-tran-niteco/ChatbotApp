@@ -1,11 +1,12 @@
-package com.example.namtran.myapplication.broadcasts;
+package com.chatbot.nam.vietnamesechatbotlibrary.broadcasts;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.example.namtran.myapplication.utils.NetworkUtil;
+import com.chatbot.nam.vietnamesechatbotlibrary.utils.NetworkUtil;
+
 
 /**
  * Created by Tran on 22-Mar-17.

@@ -1,4 +1,4 @@
-package com.example.namtran.myapplication.utils;
+package com.chatbot.nam.vietnamesechatbotlibrary.utils;
 
 /**
  * Created by Tran on 07-May-17.

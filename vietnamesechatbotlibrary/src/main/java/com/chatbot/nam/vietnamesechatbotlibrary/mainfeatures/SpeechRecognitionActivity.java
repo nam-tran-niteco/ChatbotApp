@@ -1,26 +1,29 @@
-package com.example.namtran.myapplication.utils;
+package com.chatbot.nam.vietnamesechatbotlibrary.mainfeatures;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
+import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.example.namtran.myapplication.R;
+import com.chatbot.nam.vietnamesechatbotlibrary.R;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 /**
- * Created by Tran on 19-Mar-17.
+ * Created by Tran on 08-May-17.
  */
 
-public class GoogleVoiceInput extends AppCompatActivity {
+public abstract class SpeechRecognitionActivity extends AppCompatActivity {
 
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
-    private String voiceInputResult = "";
+    private TextAnalysisThread textAnalysisThread;
 
     /**
      * Showing google speech input dialog
@@ -34,7 +37,6 @@ public class GoogleVoiceInput extends AppCompatActivity {
                 getString(R.string.speech_prompt));
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-            Log.d("End", "chatbot");
         } catch (ActivityNotFoundException a) {
             Toast.makeText(getApplicationContext(),
                     getString(R.string.speech_not_supported),
@@ -55,7 +57,17 @@ public class GoogleVoiceInput extends AppCompatActivity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    voiceInputResult = result.get(0);
+//
+//                    // Write result to file for analysis
+//                    MediaScannerConnection.scanFile(getApplicationContext(), new String[]{FileUtil.writeFile(result).getAbsolutePath()},null, null);
+
+                    String speechResult = result.get(0);
+
+                    handleSpeechResult(speechResult);
+
+                    textAnalysisThread = getTextAnalysisThread();
+                    textAnalysisThread.setInputMessage(speechResult);
+                    textAnalysisThread.execute();
                 }
                 break;
             }
@@ -63,11 +75,8 @@ public class GoogleVoiceInput extends AppCompatActivity {
         }
     }
 
-    public String getVoiceInputResult() {
-        return voiceInputResult;
-    }
+    public abstract TextAnalysisThread getTextAnalysisThread ();
 
-    public void setVoiceInputResult(String voiceInputResult) {
-        this.voiceInputResult = voiceInputResult;
-    }
+    public abstract void handleSpeechResult(String speechResult);
+
 }

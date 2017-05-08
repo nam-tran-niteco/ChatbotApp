@@ -1,4 +1,4 @@
-package com.example.namtran.myapplication.constant;
+package com.chatbot.nam.vietnamesechatbotlibrary.constant;
 
 /**
  * Created by Tran on 07-May-17.

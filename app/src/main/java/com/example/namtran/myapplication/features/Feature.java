@@ -20,9 +20,7 @@ public abstract class Feature {
 
     public Feature( Context context, HashMap<String, String> params ) {}
 
-    public String doAction() {
-        return "";
-    }
+    public abstract String doAction();
 
     public HashMap<String, String> getParams() {
         return params;

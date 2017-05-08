@@ -1,12 +1,16 @@
-package com.chatbot.nam.vietnamesechatbotlibrary.utils;
+package com.chatbot.nam.vietnamesechatbotlibrary.mainfeatures;
 
 import android.os.AsyncTask;
 
 import com.chatbot.nam.vietnamesechatbotlibrary.constant.NetworkInfo;
+import com.chatbot.nam.vietnamesechatbotlibrary.utils.HttpHandler;
+import com.chatbot.nam.vietnamesechatbotlibrary.utils.LMCouting;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -18,9 +22,11 @@ public abstract class TextAnalysisThread {
 
     private static final String ENTITIES_KEY = "entities";
 
-    private String inputMessage;
+    private  String inputMessage;
 
     private GetResponseThread _getResponseThread;
+
+    private LMCouting lmCouting;
 
     public void execute() {
         _getResponseThread = new GetResponseThread();
@@ -43,6 +49,7 @@ public abstract class TextAnalysisThread {
 
                 // Making a request to url and getting response
                 JSONObject params = new JSONObject();
+//                JSONArray input = new JSONArray(inputMessage);
                 params.put(NetworkInfo.INPUT_KEY, inputMessage);
                 String jsonStr = sh.sendRequest(NetworkInfo.SERVER_URL, params.toString());
                 textAnalyzed = getResponseParams(jsonStr);
@@ -124,5 +131,4 @@ public abstract class TextAnalysisThread {
     public void setInputMessage(String inputMessage) {
         this.inputMessage = inputMessage;
     }
-
 }

@@ -1,4 +1,4 @@
-package com.example.namtran.myapplication.utils;
+package com.chatbot.nam.vietnamesechatbotlibrary.utils;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;

@@ -34,17 +34,9 @@
 
         </activity>
 
-        <!-- Broadcast receiver -->
-        <receiver
-            android:name=".broadcasts.NetworkChangeReceiver" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
+        <!-- Services -->
+        <service android:name=".services.SpeechService"></service>
 
-        <!-- Service -->
-        <!--<service android:name=".services.SpeechRecognitionService"></service>-->
     </application>
 
 </manifest>

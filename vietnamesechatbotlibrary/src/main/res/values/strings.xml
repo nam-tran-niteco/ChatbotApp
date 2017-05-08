@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">VietnameseChatbotLibrary</string>
+    <string name="speech_prompt">Hãy nói gì đó ...</string>
+    <string name="speech_not_supported">Đã có lỗi xảy ra</string>
 </resources>

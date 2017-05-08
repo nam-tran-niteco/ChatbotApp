@@ -1,10 +1,10 @@
 package com.example.namtran.myapplication.features;
 
 /**
- * Created by Tran on 03-Apr-17.
+ * Created by Tran on 06-May-17.
  */
 
-public class AlarmFeature extends Feature {
+public class AppOpeningFeature extends Feature {
 
     @Override
     public String doAction() {

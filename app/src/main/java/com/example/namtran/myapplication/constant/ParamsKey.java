@@ -6,8 +6,10 @@ package com.example.namtran.myapplication.constant;
 
 public class ParamsKey {
 
-    public static final String INTENT_REQUEST = "intent";
+    public static final String INTENT_REQUEST = "request";
     public static final String TURN_ON_LIGHT = "turn_light_on";
+
+    public static final String CALENDAR_REMINDER = "calendar_reminder";
 
 
 }
