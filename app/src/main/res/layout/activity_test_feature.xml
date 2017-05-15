@@ -13,4 +13,10 @@
         android:checked="false"
         android:text="Turn On/Off Camera LED/ Flashlight Android" />
 
+    <Button
+        android:id="@+id/startService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"/>
+
 </LinearLayout>

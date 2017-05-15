@@ -1,14 +1,16 @@
 package com.example.namtran.myapplication.activities;
 
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.os.Bundle;
 
 import com.chatbot.nam.vietnamesechatbotlibrary.mainfeatures.SpeechRecognitionActivity;
 import com.chatbot.nam.vietnamesechatbotlibrary.mainfeatures.TextAnalysisThread;
-import com.chatbot.nam.vietnamesechatbotlibrary.utils.LMCouting;
 import com.chatbot.nam.vietnamesechatbotlibrary.utils.TextToSpeechUtil;
 import com.example.namtran.myapplication.R;
+import com.example.namtran.myapplication.utils.FileUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import co.intentservice.chatui.ChatView;
@@ -55,14 +57,17 @@ public class MainActivity extends SpeechRecognitionActivity {
     }
 
     @Override
-    public void handleSpeechResult(String speechResult) {
-        chatView.addMessage(new ChatMessage(speechResult, System.currentTimeMillis(), ChatMessage.Type.SENT));
+    public void handleSpeechResult(ArrayList<String> speechResults, String selectedResult) {
+
+        // Write result to file for analysis
+        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{FileUtil.writeFile(speechResults).getAbsolutePath()}, null, null);
+
+        chatView.addMessage(new ChatMessage(selectedResult, System.currentTimeMillis(), ChatMessage.Type.SENT));
         botMessage = new ChatMessage("Bot đang nhập ...", System.currentTimeMillis(), ChatMessage.Type.RECEIVED);
         chatView.addMessage(botMessage);
 
         customTextAnalisis.set_botMessage(botMessage);
     }
-
 
     public class CustomTextAnalysis extends TextAnalysisThread {
 

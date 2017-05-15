@@ -55,18 +55,15 @@ public abstract class SpeechRecognitionActivity extends AppCompatActivity {
             case REQ_CODE_SPEECH_INPUT: {
                 if (resultCode == RESULT_OK && null != data) {
 
-                    ArrayList<String> result = data
+                    ArrayList<String> speechResults = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-//
-//                    // Write result to file for analysis
-//                    MediaScannerConnection.scanFile(getApplicationContext(), new String[]{FileUtil.writeFile(result).getAbsolutePath()},null, null);
 
-                    String speechResult = result.get(0);
+                    String selectedResult = speechResults.get(0);
 
-                    handleSpeechResult(speechResult);
+                    handleSpeechResult(speechResults, selectedResult);
 
-                    textAnalysisThread = getTextAnalysisThread();
-                    textAnalysisThread.setInputMessage(speechResult);
+                    if (textAnalysisThread == null) textAnalysisThread = getTextAnalysisThread();
+                    textAnalysisThread.setInputMessage(selectedResult);
                     textAnalysisThread.execute();
                 }
                 break;
@@ -77,6 +74,6 @@ public abstract class SpeechRecognitionActivity extends AppCompatActivity {
 
     public abstract TextAnalysisThread getTextAnalysisThread ();
 
-    public abstract void handleSpeechResult(String speechResult);
+    public abstract void handleSpeechResult(ArrayList<String> speechResults, String selectedResult);
 
 }
