@@ -12,29 +12,32 @@ import java.util.HashMap;
 
 public abstract class Feature {
 
-    private HashMap<String, String> params = null;
+    private HashMap<String, String> _params = null;
 
-    private Context context;
+    private Context _context;
 
     public Feature(){}
 
-    public Feature( Context context, HashMap<String, String> params ) {}
+    public Feature( Context context, HashMap<String, String> params ) {
+        _context = context;
+        _params = params;
+    }
 
     public abstract String doAction();
 
     public HashMap<String, String> getParams() {
-        return params;
+        return _params;
     }
 
     public void setParams(HashMap<String, String> params) {
-        this.params = params;
+        _params = params;
     }
 
     public Context getContext() {
-        return context;
+        return _context;
     }
 
     public void setContext(Context context) {
-        this.context = context;
+        _context = context;
     }
 }

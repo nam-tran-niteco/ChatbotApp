@@ -4,13 +4,11 @@ import android.os.AsyncTask;
 
 import com.chatbot.nam.vietnamesechatbotlibrary.constant.NetworkInfo;
 import com.chatbot.nam.vietnamesechatbotlibrary.utils.HttpHandler;
-import com.chatbot.nam.vietnamesechatbotlibrary.utils.LMCouting;
+import com.chatbot.nam.vietnamesechatbotlibrary.utils.LMUtil;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -22,11 +20,11 @@ public abstract class TextAnalysisThread {
 
     private static final String ENTITIES_KEY = "entities";
 
-    private  String inputMessage;
+    private String inputMessage;
+
+    private String botMessage;
 
     private GetResponseThread _getResponseThread;
-
-    private LMCouting lmCouting;
 
     public void execute() {
         _getResponseThread = new GetResponseThread();
@@ -51,9 +49,9 @@ public abstract class TextAnalysisThread {
                 JSONObject params = new JSONObject();
 //                JSONArray input = new JSONArray(inputMessage);
                 params.put(NetworkInfo.INPUT_KEY, inputMessage);
-                String jsonStr = sh.sendRequest(NetworkInfo.SERVER_URL, params.toString());
+                String jsonStr = sh.sendRequest(NetworkInfo.SERVER_LOCAL_URL, params.toString());
                 textAnalyzed = getResponseParams(jsonStr);
-                publishProgress(getBotResponse(jsonStr));
+                setBotMessage(getBotResponse(jsonStr));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -71,6 +69,10 @@ public abstract class TextAnalysisThread {
             super.onPostExecute(result);
             onThreadPostExecute(result);
         }
+
+        public void publishThread(String... values) {
+            publishProgress(values);
+        }
     }
 
     public abstract void onThreadPreExcute();
@@ -78,6 +80,10 @@ public abstract class TextAnalysisThread {
     public abstract void onThreadProgressUpdate(String... values);
 
     public abstract void onThreadPostExecute(HashMap<String, String> result);
+
+    public void publishThread(String... values) {
+        if (_getResponseThread != null) _getResponseThread.publishThread(values);
+    }
 
     public HashMap<String, String> getResponseParams(String jsonStringResult) {
         HashMap<String, String> responseParams = new HashMap<>();
@@ -130,5 +136,13 @@ public abstract class TextAnalysisThread {
 
     public void setInputMessage(String inputMessage) {
         this.inputMessage = inputMessage;
+    }
+
+    public String getBotMessage() {
+        return botMessage;
+    }
+
+    public void setBotMessage(String botMessage) {
+        this.botMessage = botMessage;
     }
 }

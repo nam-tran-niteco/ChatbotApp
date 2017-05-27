@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.util.Log;
 
 import com.example.namtran.myapplication.constant.BotMessage;
 import com.example.namtran.myapplication.constant.ParamsKey;
 
 import java.util.HashMap;
+
+import static com.example.namtran.myapplication.constant.ParamsKey.*;
 
 /**
  * Created by Tran on 23-Feb-17.
@@ -21,8 +24,7 @@ public class LightFeature extends Feature{
     private boolean isLightOn;
 
     public LightFeature(Context context, HashMap<String, String> params) {
-        setContext(context);
-        setParams(params);
+        super(context, params);
         try {
             cameraManager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
             cameraList = cameraManager.getCameraIdList();
@@ -33,21 +35,15 @@ public class LightFeature extends Feature{
 
     @Override
     public String doAction() {
-        if ( getParams().containsKey(ParamsKey.INTENT_REQUEST) ) {
-            if ( !isAvailableFlashLight(getContext()) ) {
-                return BotMessage.LIGHT_FEATURE_NOT_AVAILABLE_MESSAGE;
-            }
-            else {
-                if ( getParams().containsKey(ParamsKey.TURN_ON_LIGHT) ) {
-                    if ( getParams().get(ParamsKey.TURN_ON_LIGHT).equals("true") ) setLightOn(true);
-                    else setLightOn(false);
-                }
-                else setLightOn(false);
-                return BotMessage.LIGHT_FEATURE_SUCCESS_MESSAGE;
-            }
-
+        if ( !isAvailableFlashLight(getContext()) ) {
+            return BotMessage.LIGHT_FEATURE_NOT_AVAILABLE_MESSAGE;
         }
-        return "";
+        else {
+            if ( getParams().get(INTENT_ENTITY).equals(TURN_ON_LIGHT) ) setLightOn(true);
+            else setLightOn(false);
+
+            return BotMessage.LIGHT_FEATURE_SUCCESS_MESSAGE;
+        }
     }
 
     public boolean isAvailableFlashLight(Context context) {

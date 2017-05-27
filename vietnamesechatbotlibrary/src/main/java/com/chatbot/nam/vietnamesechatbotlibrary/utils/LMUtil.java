@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by Tran on 07-May-17.
  */
 
-public class LMCouting{
+public class LMUtil {
 
     private static final String LM_STRING = "discount.lm";
 
@@ -27,7 +27,7 @@ public class LMCouting{
 
     private HashMap<String, Double> lm;
 
-    public LMCouting (Context context) {
+    public LMUtil(Context context) {
         _context = context;
         lm = new HashMap<>();
         loadLM();

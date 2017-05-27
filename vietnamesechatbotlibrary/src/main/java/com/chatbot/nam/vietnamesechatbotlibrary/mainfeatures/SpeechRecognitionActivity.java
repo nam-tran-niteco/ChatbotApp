@@ -2,18 +2,14 @@ package com.chatbot.nam.vietnamesechatbotlibrary.mainfeatures;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.speech.RecognizerIntent;
-import android.speech.tts.TextToSpeech;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.chatbot.nam.vietnamesechatbotlibrary.R;
-import com.chatbot.nam.vietnamesechatbotlibrary.utils.LMCouting;
+import com.chatbot.nam.vietnamesechatbotlibrary.utils.LMUtil;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,12 +26,12 @@ public abstract class SpeechRecognitionActivity extends AppCompatActivity {
 
     private TextAnalysisThread textAnalysisThread;
 
-    private LMCouting lmCouting;
+    private LMUtil lmUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lmCouting = new LMCouting(this);
+        lmUtil = new LMUtil(this);
     }
 
     /**
@@ -74,8 +70,8 @@ public abstract class SpeechRecognitionActivity extends AppCompatActivity {
                     for (String result : speechResults) {
                         Log.d(LOG_TAG, result);
                     }
-                    Log.d(LOG_TAG, "Choose: " + lmCouting.chooseTheBestOne(speechResults));
-                    String selectedResult = speechResults.get(lmCouting.chooseTheBestOne(speechResults));
+                    Log.d(LOG_TAG, "Choose: " + lmUtil.chooseTheBestOne(speechResults));
+                    String selectedResult = speechResults.get(lmUtil.chooseTheBestOne(speechResults));
 
                     handleSpeechResult(speechResults, selectedResult);
 
